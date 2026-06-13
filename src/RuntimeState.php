@@ -3,7 +3,7 @@
 /**
  * This file is part of the Nexph Framework.
  *
- * (c) Nexphlabs <https://github.com/nexphlabs>
+ * (c) nexphant <https://github.com/nexphant>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,8 +13,10 @@ namespace Nexph\Observability;
 use Nexph\Queue\QueueFactory;
 use Nexph\Runtime\Runtime;
 
-class RuntimeState {
-    public static function snapshot(?string $driver = null): array {
+class RuntimeState
+{
+    public static function snapshot(?string $driver = null): array
+    {
         $driver = $driver ?? getenv('QUEUE_DRIVER') ?: 'file';
         $queue = null;
         $queueError = null;
@@ -30,8 +32,8 @@ class RuntimeState {
 
         $runtimeAvailable = Runtime::available();
         $metrics = new RuntimeMetrics();
-        $metrics->setGauge('queue_depth', (int)($queueStatus['depth'] ?? 0));
-        $metrics->setGauge('active_workers', (int)($queueStatus['workers'] ?? 0));
+        $metrics->setGauge('queue_depth', (int) ($queueStatus['depth'] ?? 0));
+        $metrics->setGauge('active_workers', (int) ($queueStatus['workers'] ?? 0));
         $metrics->setGauge('active_fibers', self::activeFibers());
         $metrics->setGauge('active_timers', self::activeTimers());
         $metrics->setGauge('dead_letter_count', $deadLetters);
@@ -46,9 +48,9 @@ class RuntimeState {
         ];
         $data['queue'] = [
             'driver' => $driver,
-            'running' => (bool)($queueStatus['running'] ?? false),
-            'workers' => (int)($queueStatus['workers'] ?? 0),
-            'depth' => (int)($queueStatus['depth'] ?? 0),
+            'running' => (bool) ($queueStatus['running'] ?? false),
+            'workers' => (int) ($queueStatus['workers'] ?? 0),
+            'depth' => (int) ($queueStatus['depth'] ?? 0),
             'dead_letters' => $deadLetters,
             'error' => $queueError,
             'metrics' => $queueStatus['metrics'] ?? [],
@@ -63,15 +65,18 @@ class RuntimeState {
         return $data;
     }
 
-    private static function load(): array {
+    private static function load(): array
+    {
         return function_exists('sys_getloadavg') ? (sys_getloadavg() ?: []) : [];
     }
 
-    private static function activeFibers(): int {
+    private static function activeFibers(): int
+    {
         return class_exists('\Fiber') && method_exists(Runtime::class, 'stats') ? (Runtime::stats()['active_fibers'] ?? 0) : 0;
     }
 
-    private static function activeTimers(): int {
+    private static function activeTimers(): int
+    {
         return method_exists(Runtime::class, 'stats') ? (Runtime::stats()['active_timers'] ?? 0) : 0;
     }
 }
