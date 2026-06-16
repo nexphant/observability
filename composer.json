@@ -1,6 +1,6 @@
 {
     "name": "nexphant/observability",
-    "description": "nexphant Observability - Logging, Metrics, Leak Detection",
+    "description": "Nexphant Observability - Logging, Metrics, Leak Detection",
     "type": "library",
     "license": "MIT",
     "autoload": {
