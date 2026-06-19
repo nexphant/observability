@@ -189,9 +189,11 @@ class HealthMonitor
     private function getCpuCores(): int
     {
         if (is_file('/proc/cpuinfo')) {
-            $cpuinfo = file_get_contents('/proc/cpuinfo');
-            preg_match_all('/^processor/m', $cpuinfo, $matches);
-            return count($matches[0]);
+            $cpuinfo = @file_get_contents('/proc/cpuinfo');
+            if ($cpuinfo !== false) {
+                preg_match_all('/^processor/m', $cpuinfo, $matches);
+                return max(1, count($matches[0]));
+            }
         }
 
         return 1;
